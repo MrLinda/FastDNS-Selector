@@ -1,0 +1,4 @@
+# 待测试域名
+example.com
+google.com
+baidu.com
