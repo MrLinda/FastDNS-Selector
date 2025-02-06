@@ -1,4 +1,36 @@
-# 待测试域名
-example.com
-google.com
+# 国内常用域名
 baidu.com
+jd.com
+taobao.com
+tmall.com
+sina.com
+qq.com
+wechat.com
+alipay.com
+douyin.com
+bilibili.com
+zhihu.com
+douban.com
+iqiyi.com
+youku.com
+tencent.com
+alibaba.com
+netease.com
+163.com
+
+# 国际常用域名
+google.com
+amazon.com
+github.com
+facebook.com
+twitter.com
+instagram.com
+tiktok.com
+microsoft.com
+apple.com
+youtube.com
+netflix.com
+spotify.com
+reddit.com
+stackoverflow.com
+bbc.com
