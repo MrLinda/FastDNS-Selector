@@ -7,6 +7,7 @@
       <excludeFolder url="file://$MODULE_DIR$/main.dist" />
       <excludeFolder url="file://$MODULE_DIR$/main.onefile-build" />
       <excludeFolder url="file://$MODULE_DIR$/main.onefile-build/static_src" />
+      <excludeFolder url="file://$MODULE_DIR$/release" />
     </content>
     <orderEntry type="jdk" jdkName="FastDNS" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
