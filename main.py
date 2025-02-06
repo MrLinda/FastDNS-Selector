@@ -176,6 +176,24 @@ class DNSTester:
         self.treeview.tag_configure('yellow', foreground='#FFD700')  # 金黄色
         self.treeview.tag_configure('orange', foreground='#FFA500')  # 橙色
         self.treeview.tag_configure('red', foreground='#FF0000')  # 红色
+        self.treeview.tag_configure('test', foreground='#808080')  # 灰色
+
+    def start_test_thread(self):
+        """启动测试线程"""
+        self.test_btn.config(state='disabled')
+        self.domain_entry.config(state='disabled')
+        self.show_testing_status()  # 显示“测试中”状态
+        threading.Thread(target=self.run_tests).start()
+
+    def show_testing_status(self):
+        """显示“测试中”状态"""
+        for item in self.treeview.get_children():
+            self.treeview.set(item, 'latency', "测试中")
+            self.treeview.item(item, tags=('test',))  # 设置灰色字体
+
+        for item in self.domain_treeview.get_children():
+            self.domain_treeview.set(item, 'latency', "测试中")
+            self.domain_treeview.item(item, tags=('test',))  # 设置灰色字体
 
     def test_single_dns(self, server, domain):
         """测试单个DNS服务器对单个域名的响应时间"""
@@ -213,12 +231,6 @@ class DNSTester:
         # 更新进度
         self.completed_tests += 1
         self.update_progress()
-
-    def start_test_thread(self):
-        """启动测试线程"""
-        self.test_btn.config(state='disabled')
-        self.domain_entry.config(state='disabled')
-        threading.Thread(target=self.run_tests).start()
 
     def run_tests(self):
         """运行DNS服务器测试"""
@@ -262,7 +274,7 @@ class DNSTester:
             self.servers,
             key=lambda s: (
                 (self.server_results.get(s, {}).get("total_latency", float('inf')) /
-                 max(self.server_results.get(s, {}).get("count", 0), 1))  # 避免除以零
+                 max(self.server_results.get(s, {}).get("count", 0), 1))
             ) if self.server_results.get(s, {}).get("count", 0) > 0 else float('inf')
         )
 
