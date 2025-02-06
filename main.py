@@ -176,7 +176,8 @@ class DNSTester:
         self.treeview.tag_configure('yellow', foreground='#FFD700')  # 金黄色
         self.treeview.tag_configure('orange', foreground='#FFA500')  # 橙色
         self.treeview.tag_configure('red', foreground='#FF0000')  # 红色
-        self.treeview.tag_configure('test', foreground='#808080')  # 灰色
+        self.treeview.tag_configure('test', foreground='#808080')  # 灰色（用于“测试中”）
+        self.domain_treeview.tag_configure('untested', foreground='#808080')  # 灰色（用于“未测试”）
 
     def start_test_thread(self):
         """启动测试线程"""
@@ -295,7 +296,7 @@ class DNSTester:
             self.treeview.insert('', 'end', values=(server, latency_str), tags=(tag,))
 
     def update_domain_table(self):
-        """更新域名表格"""
+        """更新域名表格，计算每个域名的平均响应时间（排除超时）"""
         # 清空表格
         for row in self.domain_treeview.get_children():
             self.domain_treeview.delete(row)
@@ -308,15 +309,37 @@ class DNSTester:
             if result.endswith("ms"):
                 domain_latencies[domain].append(float(result[:-3]))
 
-        for domain in self.domains:
-            latencies = domain_latencies.get(domain, [])
-            if latencies:
-                avg_latency = sum(latencies) / len(latencies)
-                latency_str = f"{avg_latency:.2f} ms"
-            else:
-                latency_str = "无数据"
+        # 根据测试模式选择域名
+        if self.test_mode.get() == 0:
+            domains_to_update = [self.test_domain.get()]
+        else:
+            domains_to_update = self.domains
 
-            self.domain_treeview.insert('', 'end', values=(domain, latency_str))
+        # 更新表格
+        for domain in self.domains:
+            tag = ''
+            if domain in domains_to_update:
+                latencies = domain_latencies.get(domain, [])
+                if latencies:
+                    avg_latency = sum(latencies) / len(latencies)
+                    latency_str = f"{avg_latency:.2f} ms"
+                    # 设置颜色标签
+                    if avg_latency < 50:
+                        tag = 'green'
+                    elif avg_latency < 200:
+                        tag = 'yellow'
+                    elif avg_latency < 500:
+                        tag = 'orange'
+                    else:
+                        tag = 'red'
+                else:
+                    latency_str = "超时"
+                    tag = 'red'
+            else:
+                latency_str = "未测试"
+                tag = 'untested'  # 设置未测试的标签
+
+            self.domain_treeview.insert('', 'end', values=(domain, latency_str), tags=(tag,))
 
     def run(self):
         """运行主循环"""
